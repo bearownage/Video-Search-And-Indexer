@@ -27,12 +27,17 @@ class MediaPlayerApp(tk.Tk):
     def initialize_player(self, file_path, offset):
         self.instance = vlc.Instance()
         self.media_player = self.instance.media_player_new()
-        self.current_file = file_path
+        # Load the video file
+        self.media = self.instance.media_new(file_path)
+        self.media.add_option('start-time=' + str(int(offset/1000)))
+        # Set the media to the player
+        self.media_player.set_media(self.media)
+        #self.current_file = file_path
         self.playing_video = False
         self.video_paused = False
         self.create_widgets()
-        # self.start_time=offset
-        # self.set_video_position(self.start_time)
+        self.start_time=offset
+        self.set_video_position(int(self.start_time))
     
     def create_widgets(self):
         self.media_canvas = tk.Canvas(self, bg="black", width=800, height=400)
@@ -70,8 +75,8 @@ class MediaPlayerApp(tk.Tk):
     
     def play_video(self):
         if not self.playing_video:
-            media = self.instance.media_new(self.current_file)
-            self.media_player.set_media(media)
+            #media = self.instance.media_new(self.current_file)
+            #self.media_player.set_media(media)
             self.media_player.set_hwnd(self.media_canvas.winfo_id())
             # self.media_player.set_time(self.start_time)
             self.media_player.play()
@@ -89,12 +94,22 @@ class MediaPlayerApp(tk.Tk):
                 self.pause_button.config(text="Resume")
 
     def reset(self):
+        self.media.add_option('start-time=0')
+        # Set the media to the player
+        self.media_player.set_media(self.media)
         if self.playing_video:
             self.media_player.stop()
             self.playing_video = False
 
     def set_video_position(self, value):
         print(value)
+        if self.playing_video == False:
+            print("Here!")
+            total_duration = self.media.get_duration()
+            start_position = value / total_duration
+            self.media_player.set_position(start_position)
+            #self.media_player.get_media_player().set_time(value)
+            #print(self.media_player.get_time())
         if self.playing_video:
             total_duration = self.media_player.get_length()
             position = int((float(value) / 100) * total_duration)
@@ -164,11 +179,10 @@ def process_wav_file(file_path, window_size, hop_size):
         # for hash_value, window_info_list in windows_dict.items():
         #    for window_info in window_info_list:
                # print(f"Hash Value: {hash_value}, Start Frame: {window_info.start_frame}, End Frame: {window_info.end_frame}, Window Size: {window_info.window_size}")
+"""
 if __name__ == "__main__":
-    app = MediaPlayerApp("./dataset/Videos/video6.mp4", 0)
+    app = MediaPlayerApp("./dataset/Videos/video6.mp4", 408 * 1000)
     app.mainloop()
-
-
 """
 if __name__ == "__main__":
     wav_file_path = './dataset/Videos/Audios/video6.wav'
@@ -188,5 +202,3 @@ if __name__ == "__main__":
             app = MediaPlayerApp(query_file_mp4_path, (window_info.start_second * 1000))
             app.mainloop()
             print(f"Hash Value: {query_hash_value}, Start Frame: {window_info.start_frame}, End Frame: {window_info.end_frame}, Window Size: {window_info.window_size}, Start Second: {window_info.start_second}, End Second: {window_info.end_second}")
-"""
-
