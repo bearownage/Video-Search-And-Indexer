@@ -1,4 +1,5 @@
 import hashlib
+import json
 
 from PIL import Image
 from tqdm import tqdm
@@ -47,14 +48,6 @@ def frame_generator(file_path, width=352, height=288, channels=3):
                 break
             yield frame_data
 
-rgb_file_path = 'video1_1.rgb'
-first_frame_data = extract_first_frame_rgb(rgb_file_path)
-rgb_pixels = parse_rgb_data(first_frame_data)
-
-image = create_image_from_rgb(rgb_pixels, 352, 288)
-
-image.show()
-
 rgb_file_path = 'video1.rgb'
 frame_signatures = {}
 frame_number = 0
@@ -64,11 +57,11 @@ for frame_data in tqdm(frame_generator(rgb_file_path)):
     frame_number += 1
     # print(signature)
     
-print(first_frame_data[:30])
+# Specify the file path where you want to save the data
+file_path = "signatures.json"
 
-signature = create_image_signature(rgb_pixels)
-print("Digital Signature:", signature)
-print("###################################")
-print(frame_signatures[signature])
+# Serialize the dictionary to a JSON string and write it to the file
+with open(file_path, "w") as file:
+    json.dump(frame_signatures, file)
 
 # Keep in mind that image dims are 352x288
