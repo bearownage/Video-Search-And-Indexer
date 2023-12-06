@@ -19,7 +19,8 @@ class MediaPlayerApp(tk.Tk):
         self.media_player = self.instance.media_player_new()
         # Load the video file
         self.media = self.instance.media_new(file_path)
-        self.media.add_option('start-time=' + str(int(offset/1000)))
+        print("Set start time to: " + str(offset))
+        self.media.add_option('start-time=' + str(offset))
         # Set the media to the player
         self.media_player.set_media(self.media)
         #self.current_file = file_path
@@ -92,9 +93,9 @@ class MediaPlayerApp(tk.Tk):
             self.playing_video = False
 
     def set_video_position(self, value):
-        print(value)
+        # print(value)
         if self.playing_video == False:
-            print("Here!")
+            # print("Here!")
             total_duration = self.media.get_duration()
             start_position = value / total_duration
             self.media_player.set_position(start_position)

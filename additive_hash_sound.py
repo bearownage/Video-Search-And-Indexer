@@ -46,9 +46,8 @@ def process_wav_file(file_path, window_size, hop_size):
         # for hash_value, window_info_list in windows_dict.items():
         #    for window_info in window_info_list:
                # print(f"Hash Value: {hash_value}, Start Frame: {window_info.start_frame}, End Frame: {window_info.end_frame}, Window Size: {window_info.window_size}")
-"""
 if __name__ == "__main__":
-    app = MediaPlayerApp("./dataset/Videos/video6.mp4", 408 * 1000)
+    app = MediaPlayerApp("./dataset/Videos/video6.mp4", 408.125161)
     app.mainloop()
 """
 if __name__ == "__main__":
@@ -69,3 +68,4 @@ if __name__ == "__main__":
             app = MediaPlayerApp(query_file_mp4_path, (window_info.start_second * 1000))
             app.mainloop()
             print(f"Hash Value: {query_hash_value}, Start Frame: {window_info.start_frame}, End Frame: {window_info.end_frame}, Window Size: {window_info.window_size}, Start Second: {window_info.start_second}, End Second: {window_info.end_second}")
+"""
