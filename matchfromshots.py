@@ -2,7 +2,25 @@ from shotdetection import *
 import numpy as np
 import sys
 
-source_shotlists = ["video1_shots.txt", "video2_shots.txt", "video3_shots.txt"]
+source_shotlists = ["video1_shots.txt", 
+                    "video2_shots.txt", 
+                    "video3_shots.txt",
+                    "video4_shots.txt",
+                    "video5_shots.txt",
+                    "video6_shots.txt",
+                    "video7_shots.txt",
+                    "video8_shots.txt",
+                    "video9_shots.txt",
+                    "video10_shots.txt",
+                    "video12_shots.txt",
+                    "video13_shots.txt",
+                    "video14_shots.txt",
+                    "video15_shots.txt",
+                    "video16_shots.txt",
+                    "video17_shots.txt",
+                    "video18_shots.txt",
+                    "video19_shots.txt",
+                    "video20_shots.txt",]
 
 if __name__ == "__main__":
     queryvideopath = sys.argv[1]
