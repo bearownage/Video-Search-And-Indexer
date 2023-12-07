@@ -61,9 +61,11 @@ if __name__ == "__main__":
         if os.path.isfile(os.path.join(path, file)):
             print("Processing file: " + str(file))
             full_video_audio, dummy2 = get_audio_values(os.path.join(path, file), False)
-            file_path = str(file) + "_audio_signatures.json"
+            file_path = "audio_signatures_" + str(file).split(".")[0] + ".json"
             with open(file_path, "w") as file:
                 json.dump(full_video_audio, file)
+
+    """
     query_file_path = './dataset/Queries/Audios/video6_1.wav'
     query_file_mp4_path = "./dataset/Videos/video6.mp4"
     dummy1, frame_index_to_audio_map_query = get_audio_values(query_file_path, True)
@@ -77,3 +79,5 @@ if __name__ == "__main__":
     
     app = MediaPlayerApp(query_file_mp4_path, float(12241)/30)
     app.mainloop()
+    """
+    

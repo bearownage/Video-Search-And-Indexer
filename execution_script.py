@@ -5,6 +5,7 @@ import os
 import time
 import wave
 import numpy as np
+import sys
 
 from media_player_app import MediaPlayerApp
 
@@ -89,7 +90,7 @@ def find_signature_in_hashmaps(signature, hashmaps, video_names):
     for index in range(len(video_names)):
         hashmap = hashmaps[video_names[index]]
         if signature in hashmap:
-            # TODO convert index into video name
+            # video name to frame number
             matches.append((video_names[index], hashmap[signature]))
     return matches
     
@@ -104,7 +105,7 @@ def load_json_files(keyword):
             # print("Processing file: " + str(file))
             if keyword in file and "json" in file:
                 file_name=os.path.join(path, file)
-                print(file_name)
+                # print(file_name)
                 with open(file_name, "r") as file:
                     hashmap = json.load(file)
                     video_name = file_name.split("_")[-1]
@@ -119,14 +120,15 @@ if __name__ == "__main__":
     #print(image_hashmaps)
     start_time = time.time()
     #{"video1": {all the image signaure hashmap}}
-
-    # TODO set these to command line args
-    rgb_file_path = './dataset/Queries/RGB_Files/video1_1.rgb'
-    query_file_path = './dataset/Queries/Audios/video1_1.wav'
+    for file in sys.argv:
+        if ".rgb" in file:
+            rgb_file_path = file
+        elif ".wav" in file:
+            audio_file_path = file
+    
     first_frame_data = extract_first_frame_rgb(rgb_file_path)
-    first_frame_audio_data = dummy1, frame_index_to_audio_map_query = get_audio_values(query_file_path, True)
+    first_frame_audio_data = dummy1, frame_index_to_audio_map_query = get_audio_values(audio_file_path, True)
     rgb_pixels = parse_rgb_data(first_frame_data)
-
 
     # TODO Make mapping between image and audio hashmaps
     start_frame=0
@@ -134,11 +136,11 @@ if __name__ == "__main__":
     #TODO use video_name, not query
     video_name=""
     signature = create_image_signature(rgb_pixels)
-    print("Digital Signature:", signature)
+    #print("Digital Signature:", signature)
     image_signature_matches = find_signature_in_hashmaps(signature, image_hashmaps, video_names)
     if len(image_signature_matches) > 0:
         if (len(image_signature_matches) == 1):
-            print("Match found in hashmaps:", image_signature_matches)
+            #print("Match found in hashmaps:", image_signature_matches)
 
             start_frame=image_signature_matches[0][1]
 
@@ -146,7 +148,13 @@ if __name__ == "__main__":
         else:
             print("Multiple image matches found!")
             for matches in image_signature_matches:
-                print("lol")
+                # 
+                curr_video_name = matches[0]
+                audio_hashmap = audio_hashmaps[curr_video_name]
+                frames_with_matching_audio_data = audio_hashmap[frames_with_matching_audio_data]
+                print(frames_with_matching_audio_data)
+
+                # print("lol")
                 # Take value in matches[0]
                 # Grab corresponding audio hashmap
                 # get(first_frame_audio_data)

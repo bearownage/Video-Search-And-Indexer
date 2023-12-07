@@ -19,7 +19,7 @@ class MediaPlayerApp(tk.Tk):
         self.media_player = self.instance.media_player_new()
         # Load the video file
         self.media = self.instance.media_new(file_path)
-        print("Set start time to: " + str(offset))
+        # print("Set start time to: " + str(offset))
         self.media.add_option('start-time=' + str(offset))
         # Set the media to the player
         self.media_player.set_media(self.media)
