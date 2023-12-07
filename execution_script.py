@@ -84,18 +84,19 @@ def parse_rgb_data(raw_data):
 
     return rgb_pixels
     
-def find_signature_in_hashmaps(signature, hashmaps):
+def find_signature_in_hashmaps(signature, hashmaps, video_names):
     matches=[]
-    for index in range(len(hashmaps)):
-        hashmap = hashmaps[index]
+    for index in range(len(video_names)):
+        hashmap = hashmaps[video_names[index]]
         if signature in hashmap:
             # TODO convert index into video name
-            matches.append((index, hashmap[signature]))
+            matches.append((video_names[index], hashmap[signature]))
     return matches
     
 def load_json_files(keyword):
     #TODO convert this to a hashmap
-    hashmaps = []
+    hashmaps = {}
+    video_names= []
     path = "./"
     files = os.listdir(path)
     for file in files:
@@ -106,13 +107,18 @@ def load_json_files(keyword):
                 print(file_name)
                 with open(file_name, "r") as file:
                     hashmap = json.load(file)
-                    hashmaps.append(hashmap)
-    return hashmaps
+                    video_name = file_name.split("_")[-1]
+                    hashmaps[video_name] = hashmap
+                    video_names.append(video_name)
+                    #hashmaps.append(hashmap)
+    return hashmaps, video_names
 
 if __name__ == "__main__":
-    image_hashmaps = load_json_files("image")
-    audio_hashmaps = load_json_files("video")
+    image_hashmaps, video_names = load_json_files("image")
+    audio_hashmaps, _ = load_json_files("video")
+    #print(image_hashmaps)
     start_time = time.time()
+    #{"video1": {all the image signaure hashmap}}
 
     # TODO set these to command line args
     rgb_file_path = './dataset/Queries/RGB_Files/video1_1.rgb'
@@ -129,14 +135,14 @@ if __name__ == "__main__":
     video_name=""
     signature = create_image_signature(rgb_pixels)
     print("Digital Signature:", signature)
-    image_signature_matches = find_signature_in_hashmaps(signature, image_hashmaps)
+    image_signature_matches = find_signature_in_hashmaps(signature, image_hashmaps, video_names)
     if len(image_signature_matches) > 0:
         if (len(image_signature_matches) == 1):
             print("Match found in hashmaps:", image_signature_matches)
 
             start_frame=image_signature_matches[0][1]
 
-            video_name = image_signature_matches[0][0] + ".mp4"
+            video_name = "./dataset/Videos/" + image_signature_matches[0][0].split(".")[0] + ".mp4"
         else:
             print("Multiple image matches found!")
             for matches in image_signature_matches:
