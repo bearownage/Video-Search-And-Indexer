@@ -3,9 +3,8 @@ import cv2
 import numpy as np
 import sys
 
-
-if __name__ == "__main__":
-    videopath = sys.argv[1]
+def process_shot_list(videopath) :
+    print("Processing shot list for " + videopath)
     videopath_name = videopath[:videopath.index('.')]
     capture = cv2.VideoCapture(str(videopath))
     curr_frame = None
@@ -15,6 +14,7 @@ if __name__ == "__main__":
     success, frame = capture.read()
     i = 0
     FRAME = Frame(0, 0)
+    print("Calculating frame differences...")
     while (success):
         luv = cv2.cvtColor(frame, cv2.COLOR_BGR2LUV)
         curr_frame = luv
@@ -46,13 +46,21 @@ if __name__ == "__main__":
 
 
     # detect the possible frame
+    print("Detecting possible frames...")
     frame_return, start_id_spot_old, end_id_spot_old = FRAME.find_possible_frame(frames)
 
     # optimize the possible frame
+    print("Optimizing possible frames...")
     new_frame, start_id_spot, end_id_spot = FRAME.optimize_frame(frame_return, frames)
 
     # store the result
+    output_filepath = videopath_name + '_shots.txt'
+    print("Writing shot list to " + output_filepath)
     start = np.array(start_id_spot)[np.newaxis, :]
     end = np.array(end_id_spot)[np.newaxis, :]
     spot = np.concatenate((start.T, end.T), axis=1)
-    np.savetxt('./' + videopath_name + '_shots.txt', spot, fmt='%d', delimiter='\t')
+    np.savetxt('./' + output_filepath, spot, fmt='%d', delimiter='\t')
+
+
+if __name__ == "__main__":
+    process_shot_list(sys.argv[1])
