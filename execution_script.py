@@ -116,10 +116,8 @@ def load_json_files(keyword):
 
 if __name__ == "__main__":
     image_hashmaps, video_names = load_json_files("image")
-    audio_hashmaps, _ = load_json_files("video")
-    #print(image_hashmaps)
+    audio_hashmaps, _ = load_json_files("audio")
     start_time = time.time()
-    #{"video1": {all the image signaure hashmap}}
     for file in sys.argv:
         if ".rgb" in file:
             rgb_file_path = file
@@ -127,13 +125,14 @@ if __name__ == "__main__":
             audio_file_path = file
     
     first_frame_data = extract_first_frame_rgb(rgb_file_path)
-    first_frame_audio_data = dummy1, frame_index_to_audio_map_query = get_audio_values(audio_file_path, True)
+    dummy1, first_frame_audio_data = get_audio_values(audio_file_path, True)
     rgb_pixels = parse_rgb_data(first_frame_data)
+    first_frame_audio_data = str(first_frame_audio_data[1])
+    # print("Audio data: " + first_frame_audio_data)
 
-    # TODO Make mapping between image and audio hashmaps
+    # Testing
+    # first_frame_audio_data = "1601"
     start_frame=0
-
-    #TODO use video_name, not query
     video_name=""
     signature = create_image_signature(rgb_pixels)
     #print("Digital Signature:", signature)
@@ -141,25 +140,24 @@ if __name__ == "__main__":
     if len(image_signature_matches) > 0:
         if (len(image_signature_matches) == 1):
             #print("Match found in hashmaps:", image_signature_matches)
-
             start_frame=image_signature_matches[0][1]
-
+            print(signature)
+            print(image_signature_matches)
             video_name = "./dataset/Videos/" + image_signature_matches[0][0].split(".")[0] + ".mp4"
         else:
-            print("Multiple image matches found!")
+            # print("Multiple image matches found!")
             for matches in image_signature_matches:
-                # 
                 curr_video_name = matches[0]
                 audio_hashmap = audio_hashmaps[curr_video_name]
-                frames_with_matching_audio_data = audio_hashmap[frames_with_matching_audio_data]
-                print(frames_with_matching_audio_data)
-
-                # print("lol")
-                # Take value in matches[0]
-                # Grab corresponding audio hashmap
-                # get(first_frame_audio_data)
-                # check if frame number in images frame number  in audio values
-            # Tiebreak
+                # if query signature is in overall wav file hashmap
+                if first_frame_audio_data in audio_hashmap:
+                    # if frame number from image hashmap is in list of frame numbers with same audio value
+                    if matches[1] in audio_hashmap[first_frame_audio_data]:
+                        # take this video_name and break
+                        start_frame = matches[1]
+                        video_name = "./dataset/Videos/" + matches[0].split(".")[0] + ".mp4"
+                        break
+        
     else:
         print("No match found in hashmaps.")
     end_time = time.time()
