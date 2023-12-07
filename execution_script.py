@@ -34,6 +34,23 @@ def parse_rgb_data(raw_data):
     rgb_pixels = [(pixel[0], pixel[1], pixel[2]) for pixel in pixels]
 
     return rgb_pixels
+    
+def find_signature_in_hashmaps(signature, hashmaps):
+    for hashmap in hashmaps:
+        if signature in hashmap:
+            return hashmap[signature]
+    return None
+    
+def load_json_files(num_files):
+    hashmaps = []
+    for i in range(1, num_files + 1):
+        file_name = f"signatures{i}.json"
+        with open(file_name, "r") as file:
+            hashmap = json.load(file)
+            hashmaps.append(hashmap)
+    return hashmaps
+
+all_hashmaps = load_json_files(20)
 
 rgb_file_path = 'video1_1.rgb'
 first_frame_data = extract_first_frame_rgb(rgb_file_path)
@@ -47,12 +64,19 @@ print(first_frame_data[:30])
 
 file_path = "signatures.json"
 
-with open(file_path, "r") as file:
-    frame_signatures = json.load(file)
+# with open(file_path, "r") as file:
+#     frame_signatures = json.load(file)
 
 # print(frame_signatures)
 
 signature = create_image_signature(rgb_pixels)
 print("Digital Signature:", signature)
-print("###################################")
-print(frame_signatures[signature])
+
+signature_match = find_signature_in_hashmaps(signature, all_hashmaps)
+if signature_match is not None:
+    print("Match found in hashmaps:", signature_match)
+else:
+    print("No match found in hashmaps.")
+    
+# print("###################################")
+# print(frame_signatures[signature])

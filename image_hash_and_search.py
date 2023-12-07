@@ -48,7 +48,7 @@ def frame_generator(file_path, width=352, height=288, channels=3):
                 break
             yield frame_data
 
-rgb_file_path = 'video1.rgb'
+rgb_file_path = 'video2.rgb'
 frame_signatures = {}
 frame_number = 0
 for frame_data in tqdm(frame_generator(rgb_file_path)):
@@ -58,7 +58,7 @@ for frame_data in tqdm(frame_generator(rgb_file_path)):
     # print(signature)
     
 # Specify the file path where you want to save the data
-file_path = "signatures.json"
+file_path = "signatures2.json"
 
 # Serialize the dictionary to a JSON string and write it to the file
 with open(file_path, "w") as file:
