@@ -1,6 +1,7 @@
 from PIL import Image
 import json
 import hashlib
+from media_player_app import MediaPlayerApp
 
 def create_image_from_rgb(rgb_data, width, height):
     image = Image.new('RGB', (width, height))
@@ -52,9 +53,10 @@ def load_json_files(num_files):
 
 all_hashmaps = load_json_files(20)
 
-rgb_file_path = 'video1_1.rgb'
+rgb_file_path = './dataset/Queries/RGB_Files/video1_1.rgb'
 first_frame_data = extract_first_frame_rgb(rgb_file_path)
 rgb_pixels = parse_rgb_data(first_frame_data)
+query_file_mp4_path = './dataset/Videos/video1.mp4'
 
 image = create_image_from_rgb(rgb_pixels, 352, 288)
 
@@ -71,7 +73,6 @@ file_path = "signatures.json"
 
 signature = create_image_signature(rgb_pixels)
 print("Digital Signature:", signature)
-
 signature_match = find_signature_in_hashmaps(signature, all_hashmaps)
 if signature_match is not None:
     print("Match found in hashmaps:", signature_match)
@@ -80,3 +81,8 @@ else:
     
 # print("###################################")
 # print(frame_signatures[signature])
+print("###################################")
+print("Frame number of video start: " + str(frame_signatures[signature]))
+
+app = MediaPlayerApp(query_file_mp4_path, float(frame_signatures[signature])/30)
+app.mainloop()
