@@ -141,8 +141,8 @@ if __name__ == "__main__":
         if (len(image_signature_matches) == 1):
             #print("Match found in hashmaps:", image_signature_matches)
             start_frame=image_signature_matches[0][1]
-            print(signature)
-            print(image_signature_matches)
+            # print(signature)
+            # print(image_signature_matches)
             video_name = "./dataset/Videos/" + image_signature_matches[0][0].split(".")[0] + ".mp4"
         else:
             # print("Multiple image matches found!")
