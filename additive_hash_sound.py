@@ -15,8 +15,8 @@ def get_audio_values(file_path, is_query_wav):
         frames_to_skip = int(frame_rate / frames_per_second)
         audio_value_to_frame_index_map={}
         frame_index_to_audio_map={}
-        print("Number of frames:" + str(num_frames))
-        print("Framerate: " + str(wave_file.getframerate()))
+        # print("Number of frames:" + str(num_frames))
+        # print("Framerate: " + str(wave_file.getframerate()))
 
         # Read all frames
         frames = wave_file.readframes(num_frames)
@@ -24,14 +24,14 @@ def get_audio_values(file_path, is_query_wav):
 
         # Convert frames to NumPy array
         audio_array = np.frombuffer(frames, dtype=np.int16)
-        print("1Audio array len: " + str(len(audio_array)))
+        # print("1Audio array len: " + str(len(audio_array)))
 
         # Split the array into channels
         audio_array = audio_array.reshape((-1, channels))
 
         # Iterate over frames and get audio values
         frame_num = 0
-        print("Audio array len: " + str(len(audio_array)))
+        # print("Audio array len: " + str(len(audio_array)))
         for i in range(0, len(audio_array), frames_to_skip):
             frame = audio_array[i]
             frame_num += 1

@@ -48,6 +48,7 @@ def frame_generator(file_path, width=352, height=288, channels=3):
                 break
             yield frame_data
 
+#TODO allow command line arguments
 rgb_file_path = 'video2.rgb'
 frame_signatures = {}
 frame_number = 0
