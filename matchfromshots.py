@@ -23,8 +23,7 @@ source_shotlists = ["video1_shots.txt",
                     "video19_shots.txt",
                     "video20_shots.txt",]
 
-if __name__ == "__main__":
-    queryvideopath = sys.argv[1]
+def check_query_by_shots(queryvideopath):
     queryvideopath_name = queryvideopath[:queryvideopath.index('.')]
     
     print("query video is " + queryvideopath)
@@ -44,8 +43,8 @@ if __name__ == "__main__":
     if len(query_shotlengths) <= 2:
         print("inconclusive")
     else:
-
         sequences_by_source = []
+        sequences_by_source_start_frames = []
         # for each source shotlist
         for sourceshotlist_path in source_shotlists:
             print("\nchecking " + sourceshotlist_path)
@@ -62,10 +61,12 @@ if __name__ == "__main__":
                 source_shotstarts.append(start)
 
             sequence_candidates = []
+            sequence_candidates_start_frames = []
             for source_index in range(len(source_shotlengths) - 1):
                 # print("source_index = " + str(source_index))
                 seq_index = 0
                 sequence = []
+                sequence_start_frame = 0
                 while True:
                     if seq_index >= len(query_shotlengths):
                         break
@@ -88,10 +89,13 @@ if __name__ == "__main__":
                     if seq_index >= 2:
                         print("  match " + str(seq_index) + " at index " + str(source_index + seq_index) + ": " + str(source_shot_length) + " and " + str(query_shot_length))
 
+                    if seq_index == 0:
+                        sequence_start_frame = source_index
                     sequence.append(source_shotstarts[source_index + seq_index])
                     seq_index += 1
                 if len(sequence) >= 2:
                     sequence_candidates.append(sequence)
+                    sequence_candidates_start_frames.append(sequence_start_frame)
 
             # only keep longest sequence as best sequence from this source
             print("sequence candidates:")
@@ -105,14 +109,17 @@ if __name__ == "__main__":
                         max_index = sequence_candidates.index(candidate)
                 longest_sequence = sequence_candidates[max_index]
                 sequences_by_source.append(longest_sequence)
+                sequences_by_source_start_frames.append(sequence_candidates_start_frames[max_index])
             else:
                 print("no candidates")
                 empty_seq = []
                 sequences_by_source.append(empty_seq)
+                sequences_by_source_start_frames.append(-1)
 
         # pick source with the longest sequence
         print("sequences by source")
         print(*sequences_by_source)
+        print(*sequences_by_source_start_frames)
         max_length = 0
         max_index = None
         for sequence in sequences_by_source:
@@ -122,6 +129,11 @@ if __name__ == "__main__":
         if max_index is None:
             print("not sure")
         else:
-            print("\nquery is from " + source_shotlists[max_index])
+            sourcefile = source_shotlists[max_index]
+            startframe = sequences_by_source[max_index][0]
+            print("\nquery is from " + sourcefile + " at frame " + str(startframe))
 
 
+if __name__ == "__main__":
+    queryvideopath = sys.argv[1]
+    check_query_by_shots(queryvideopath)
