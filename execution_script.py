@@ -144,8 +144,8 @@ if __name__ == "__main__":
             # print(signature)
             # print(image_signature_matches)
             video_name = "./dataset/Videos/" + image_signature_matches[0][0].split(".")[0] + ".mp4"
+        # If more than 1 videos have same images but different audios/shot boundaries
         else:
-            # print("Multiple image matches found!")
             for matches in image_signature_matches:
                 curr_video_name = matches[0]
                 audio_hashmap = audio_hashmaps[curr_video_name]
@@ -157,6 +157,9 @@ if __name__ == "__main__":
                         start_frame = matches[1]
                         video_name = "./dataset/Videos/" + matches[0].split(".")[0] + ".mp4"
                         break
+            # No audio matches
+            if video_name == "":
+                pass
         
     else:
         print("No match found in hashmaps.")
