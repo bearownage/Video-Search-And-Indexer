@@ -26,7 +26,7 @@ source_shotlists = ["video1_shots.txt",
 def check_query_by_shots(queryvideopath):
     queryvideopath_name = queryvideopath[:queryvideopath.index('.')]
     
-    print("query video is " + queryvideopath)
+    # print("query video is " + queryvideopath)
 
     process_shot_list(queryvideopath)
 
@@ -41,13 +41,14 @@ def check_query_by_shots(queryvideopath):
 
     # only if query has more than 2 shotlengths
     if len(query_shotlengths) <= 2:
-        print("inconclusive")
+        pass
+        # print("inconclusive")
     else:
         sequences_by_source = []
         sequences_by_source_start_frames = []
         # for each source shotlist
         for sourceshotlist_path in source_shotlists:
-            print("\nchecking " + sourceshotlist_path)
+            # print("\nchecking " + sourceshotlist_path)
             source_shotlist = open(sourceshotlist_path)
             source_shotlengths = []
             source_shotstarts = []
@@ -87,7 +88,8 @@ def check_query_by_shots(queryvideopath):
                             break
 
                     if seq_index >= 2:
-                        print("  match " + str(seq_index) + " at index " + str(source_index + seq_index) + ": " + str(source_shot_length) + " and " + str(query_shot_length))
+                        pass
+                        # print("  match " + str(seq_index) + " at index " + str(source_index + seq_index) + ": " + str(source_shot_length) + " and " + str(query_shot_length))
 
                     if seq_index == 0:
                         sequence_start_frame = source_index
@@ -98,8 +100,8 @@ def check_query_by_shots(queryvideopath):
                     sequence_candidates_start_frames.append(sequence_start_frame)
 
             # only keep longest sequence as best sequence from this source
-            print("sequence candidates:")
-            print(*sequence_candidates)
+            # print("sequence candidates:")
+            # print(*sequence_candidates)
             if len(sequence_candidates) > 0:
                 max_length = 0
                 max_index = 0
@@ -111,15 +113,15 @@ def check_query_by_shots(queryvideopath):
                 sequences_by_source.append(longest_sequence)
                 sequences_by_source_start_frames.append(sequence_candidates_start_frames[max_index])
             else:
-                print("no candidates")
+                # print("no candidates")
                 empty_seq = []
                 sequences_by_source.append(empty_seq)
                 sequences_by_source_start_frames.append(-1)
 
         # pick source with the longest sequence
-        print("sequences by source")
-        print(*sequences_by_source)
-        print(*sequences_by_source_start_frames)
+        # print("sequences by source")
+        # print(*sequences_by_source)
+        # print(*sequences_by_source_start_frames)
         max_length = 0
         max_index = None
         for sequence in sequences_by_source:
@@ -127,7 +129,7 @@ def check_query_by_shots(queryvideopath):
                 max_length = len(sequence)
                 max_index = sequences_by_source.index(sequence)
         if max_index is None:
-            print("not sure")
+            # print("not sure")
             return None, None
         else:
             sourcefile = source_shotlists[max_index]
