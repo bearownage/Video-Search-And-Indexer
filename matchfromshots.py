@@ -128,10 +128,15 @@ def check_query_by_shots(queryvideopath):
                 max_index = sequences_by_source.index(sequence)
         if max_index is None:
             print("not sure")
+            return None, None
         else:
             sourcefile = source_shotlists[max_index]
             startframe = sequences_by_source[max_index][0]
-            print("\nquery is from " + sourcefile + " at frame " + str(startframe))
+
+            sourcevideo = sourcefile[:sourcefile.index("_shots.txt")] + ".mp4"
+
+            print("\nquery is from " + sourcevideo + " at frame " + str(startframe))
+            return sourcevideo, startframe
 
 
 if __name__ == "__main__":

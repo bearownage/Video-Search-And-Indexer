@@ -6,6 +6,7 @@ import time
 import wave
 import numpy as np
 import sys
+import matchfromshots
 
 from media_player_app import MediaPlayerApp
 
@@ -121,8 +122,11 @@ if __name__ == "__main__":
     for file in sys.argv:
         if ".rgb" in file:
             rgb_file_path = file
+            mp4_file_path = rgb_file_path[:rgb_file_path.index(".")] + ".mp4"
         elif ".wav" in file:
             audio_file_path = file
+        elif ".mp4" in file:
+            mp4_file_path = file
     
     first_frame_data = extract_first_frame_rgb(rgb_file_path)
     dummy1, first_frame_audio_data = get_audio_values(audio_file_path, True)
@@ -157,9 +161,11 @@ if __name__ == "__main__":
                         start_frame = matches[1]
                         video_name = "./dataset/Videos/" + matches[0].split(".")[0] + ".mp4"
                         break
-            # No audio matches
+            # No audio matches, do shot detection
             if video_name == "":
-                pass
+                source_video, start_frame = matchfromshots.check_query_by_shots(mp4_file_path)
+                if source_video is not None:
+                    video_name = "./dataset/Videos/" + source_video
         
     else:
         print("No match found in hashmaps.")
