@@ -51,7 +51,12 @@ def process_shot_list(videopath) :
 
     # optimize the possible frame
     print("Optimizing possible frames...")
-    new_frame, start_id_spot, end_id_spot = FRAME.optimize_frame(frame_return, frames)
+    try:
+        new_frame, start_id_spot, end_id_spot = FRAME.optimize_frame(frame_return, frames)
+    except:
+        new_frame = []
+        start_id_spot = []
+        end_id_spot = []
 
     # store the result
     output_filepath = videopath_name + '_shots.txt'

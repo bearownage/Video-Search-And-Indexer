@@ -40,88 +40,88 @@ if __name__ == "__main__":
         shot_length = end - start
         query_shotlengths.append(shot_length)
 
-    # make list of shot lengths from query video (excluding first and last)
-    # for each source shotlist
-        # keep list of possible sequences 
-        # for each shot length in source shotlist 
-            # if first shot length matches first shot length
-                # for each shot length after first 
-                    # if shot length matches, add to sequence
-                # add sequence to list of possible sequences
-        # store list of possible sequences in list of sequences by source video 
+    # only if query has more than 2 shotlengths
+    if len(query_shotlengths) <= 2:
+        print("inconclusive")
+    else:
 
-    sequences_by_source = []
-    # for each source shotlist
-    for sourceshotlist_path in source_shotlists:
-        print("\nchecking " + sourceshotlist_path)
-        source_shotlist = open(sourceshotlist_path)
-        source_shotlengths = []
-        source_shotstarts = []
-        # read source file and store data in lists
-        for line in source_shotlist.readlines():
-            elems = line.split()
-            start = int(elems[0])
-            end = int(elems[1])
-            length = end - start
-            source_shotlengths.append(length)
-            source_shotstarts.append(start)
+        sequences_by_source = []
+        # for each source shotlist
+        for sourceshotlist_path in source_shotlists:
+            print("\nchecking " + sourceshotlist_path)
+            source_shotlist = open(sourceshotlist_path)
+            source_shotlengths = []
+            source_shotstarts = []
+            # read source file and store data in lists
+            for line in source_shotlist.readlines():
+                elems = line.split()
+                start = int(elems[0])
+                end = int(elems[1])
+                length = end - start
+                source_shotlengths.append(length)
+                source_shotstarts.append(start)
 
-        sequence_candidates = []
-        for source_index in range(len(source_shotlengths) - 1):
-            # print("source_index = " + str(source_index))
-            seq_index = 0
-            sequence = []
-            while True:
-                if seq_index >= len(query_shotlengths):
-                    break
-                if (source_index + seq_index) >= len(source_shotlengths):
-                    break
-
-                source_shot_length = source_shotlengths[source_index + seq_index]
-                query_shot_length = query_shotlengths[seq_index]
-
-                # if first or last in sequence, source length must be greater than query length
-                if seq_index == 0 or seq_index == len(query_shotlengths) - 1:
-                    if source_shot_length < query_shot_length:
+            sequence_candidates = []
+            for source_index in range(len(source_shotlengths) - 1):
+                # print("source_index = " + str(source_index))
+                seq_index = 0
+                sequence = []
+                while True:
+                    if seq_index >= len(query_shotlengths):
                         break
-                # if in middle, diff must be negligible
-                else:
-                    diff = abs(source_shot_length - query_shot_length)
-                    if diff > 1:
+                    if (source_index + seq_index) >= len(source_shotlengths):
                         break
 
-                if seq_index > 0:
-                    print("  match " + str(seq_index) + " at index " + str(source_index + seq_index) + ": " + str(source_shot_length) + " and " + str(query_shot_length))
+                    source_shot_length = source_shotlengths[source_index + seq_index]
+                    query_shot_length = query_shotlengths[seq_index]
 
-                sequence.append(source_shotstarts[source_index + seq_index])
-                seq_index += 1
-            if len(sequence) > 0:
-                sequence_candidates.append(sequence)
+                    # if first or last in sequence, source length must be greater than query length
+                    if seq_index == 0 or seq_index == len(query_shotlengths) - 1:
+                        if source_shot_length < query_shot_length:
+                            break
+                    # if in middle, diff must be negligible
+                    else:
+                        diff = abs(source_shot_length - query_shot_length)
+                        if diff > 1:
+                            break
 
-        # only keep longest sequence as best sequence from this source
-        if len(sequence_candidates) > 0:
-            print("all candidates:")
-            max_length = 0
-            max_index = 0
-            for candidate in sequence_candidates:
-                print(*candidate)
-                if len(candidate) > max_length:
-                    max_length = len(candidate)
-                    max_index = sequence_candidates.index(candidate)
-            longest_sequence = sequence_candidates[max_index]
-            sequences_by_source.append(longest_sequence)
+                    if seq_index >= 2:
+                        print("  match " + str(seq_index) + " at index " + str(source_index + seq_index) + ": " + str(source_shot_length) + " and " + str(query_shot_length))
+
+                    sequence.append(source_shotstarts[source_index + seq_index])
+                    seq_index += 1
+                if len(sequence) >= 2:
+                    sequence_candidates.append(sequence)
+
+            # only keep longest sequence as best sequence from this source
+            print("sequence candidates:")
+            print(*sequence_candidates)
+            if len(sequence_candidates) > 0:
+                max_length = 0
+                max_index = 0
+                for candidate in sequence_candidates:
+                    if len(candidate) > max_length:
+                        max_length = len(candidate)
+                        max_index = sequence_candidates.index(candidate)
+                longest_sequence = sequence_candidates[max_index]
+                sequences_by_source.append(longest_sequence)
+            else:
+                print("no candidates")
+                empty_seq = []
+                sequences_by_source.append(empty_seq)
+
+        # pick source with the longest sequence
+        print("sequences by source")
+        print(*sequences_by_source)
+        max_length = 0
+        max_index = None
+        for sequence in sequences_by_source:
+            if (max_length is None and len(sequence) > 0) or (max_length is not None and len(sequence) > max_length):
+                max_length = len(sequence)
+                max_index = sequences_by_source.index(sequence)
+        if max_index is None:
+            print("not sure")
         else:
-            print("no candidates")
-            empty_seq = []
-            sequences_by_source.append(empty_seq)
-
-    # pick source with the longest sequence
-    max_length = 0
-    max_index = 0
-    for sequence in sequences_by_source:
-        if len(sequence) > max_length:
-            max_length = len(sequence)
-            max_index = sequences_by_source.index(sequence)
-    print("\nquery is from " + source_shotlists[max_index])
+            print("\nquery is from " + source_shotlists[max_index])
 
 

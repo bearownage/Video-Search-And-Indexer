@@ -193,6 +193,8 @@ class Frame:
         get the index of the first and last frame of a shot
 
         """
+        if len(new_tag_frames) == 0:
+            return
 
         for i in range(0,len(new_tag_frames)):
             start_id_spot.append(new_tag_frames[i].id)

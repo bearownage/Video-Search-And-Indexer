@@ -1,5 +1,0 @@
-
-- use beginning and end but only check if shot is greater than that (aka if theres not a cut in the middle)
-- if query video doesnt have any shots, dont give an answer 
-- set minimum difference for pre-processing so video1 doesnt have any shots detected
-    - so video1 query doesnt have any shots 
