@@ -4,4 +4,3 @@
 *.rgb
 dataset/576_final_PA/mp4_to_rgb.py
 dataset/mp4_to_rgb.py
-*.json
