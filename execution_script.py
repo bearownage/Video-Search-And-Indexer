@@ -122,7 +122,7 @@ if __name__ == "__main__":
     for file in sys.argv:
         if ".rgb" in file:
             rgb_file_path = file
-            mp4_file_path = rgb_file_path[:rgb_file_path.index(".")] + ".mp4"
+            mp4_file_path = rgb_file_path[:rgb_file_path.index("rgb")] + "mp4"
         elif ".wav" in file:
             audio_file_path = file
         elif ".mp4" in file:
