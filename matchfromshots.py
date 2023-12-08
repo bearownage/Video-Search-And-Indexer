@@ -12,6 +12,7 @@ source_shotlists = ["video1_shots.txt",
                     "video8_shots.txt",
                     "video9_shots.txt",
                     "video10_shots.txt",
+                    "video11_shots.txt",
                     "video12_shots.txt",
                     "video13_shots.txt",
                     "video14_shots.txt",
@@ -38,9 +39,6 @@ if __name__ == "__main__":
         end = int(elems[1])
         shot_length = end - start
         query_shotlengths.append(shot_length)
-    # remove first and last
-    query_shotlengths.pop(0) 
-    query_shotlengths.pop()
 
     # make list of shot lengths from query video (excluding first and last)
     # for each source shotlist
@@ -81,11 +79,20 @@ if __name__ == "__main__":
 
                 source_shot_length = source_shotlengths[source_index + seq_index]
                 query_shot_length = query_shotlengths[seq_index]
-                diff = abs(source_shot_length - query_shot_length)
-                if diff > 1:
-                    break
 
-                print("  match " + str(seq_index) + " at index " + str(source_index + seq_index) + ": " + str(source_shot_length) + " and " + str(query_shot_length))
+                # if first or last in sequence, source length must be greater than query length
+                if seq_index == 0 or seq_index == len(query_shotlengths) - 1:
+                    if source_shot_length < query_shot_length:
+                        break
+                # if in middle, diff must be negligible
+                else:
+                    diff = abs(source_shot_length - query_shot_length)
+                    if diff > 1:
+                        break
+
+                if seq_index > 0:
+                    print("  match " + str(seq_index) + " at index " + str(source_index + seq_index) + ": " + str(source_shot_length) + " and " + str(query_shot_length))
+
                 sequence.append(source_shotstarts[source_index + seq_index])
                 seq_index += 1
             if len(sequence) > 0:
